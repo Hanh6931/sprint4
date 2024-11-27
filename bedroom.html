@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bedroom Controls</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="sidebar">
+        <div class="logo">SH</div>
+        <ul>
+            <li><a href="floorplan.html">Home</a></li>
+            <li><a href="bedroom.html" class="active">Bedroom</a></li>
+            <li><a href="living-room.html">Living Room</a></li>
+            <li><a href="kitchen.html">Kitchen</a></li>
+            <li><a href="bathroom.html">Bathroom</a></li>
+        </ul>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="main-content">
+        <header>
+            <h1>Bedroom Control</h1>
+        </header>
+
+        <div class="container">
+            <!-- Bedroom Light Control -->
+            <div class="device-control light-control">
+                <h2>Lights</h2>
+                <div id="light-bulb" class="light-bulb off"></div>
+                <label for="brightness">Brightness</label>
+                <input type="range" id="brightness" min="0" max="100" value="50" disabled>
+
+                <h3>RGB Control</h3>
+                <label for="red">Red</label>
+                <input type="range" id="red" min="0" max="255" value="128" disabled>
+                <p>Red: <span id="redValue">128</span></p>
+
+                <label for="green">Green</label>
+                <input type="range" id="green" min="0" max="255" value="128" disabled>
+                <p>Green: <span id="greenValue">128</span></p>
+
+                <label for="blue">Blue</label>
+                <input type="range" id="blue" min="0" max="255" value="128" disabled>
+                <p>Blue: <span id="blueValue">128</span></p>
+
+                <button id="toggle-light">Toggle Light</button>
+                <p>Status: <span id="lightStatus">On</span></p>
+
+            </div>
+
+            <!-- Bedroom Curtain Control -->
+            <div class="device-control curtain-control">
+                <h2>Curtain Control</h2>
+                <div class="curtain-container">
+                    <div id="left-curtain" class="curtain curtain-left"></div>
+                    <div id="right-curtain" class="curtain curtain-right"></div>
+                </div>
+
+                <label for="leftCurtainRange">Left Curtain</label>
+                <input type="range" id="leftCurtainRange" min="0" max="100" value="100">
+                <p>Left Status: <span id="leftCurtainStatus">Closed</span></p>
+
+                <label for="rightCurtainRange">Right Curtain</label>
+                <input type="range" id="rightCurtainRange" min="0" max="100" value="100">
+                <p>Right Status: <span id="rightCurtainStatus">Closed</span></p>
+            </div>
+
+            <!-- Bedroom Air Conditioner Control -->
+            <div class="device-control ac-control">
+                <h2>Air Conditioner</h2>
+                <div id="ac-dial" class="ac-dial off">
+                    <div class="dial-center">
+                        <span id="acTempDisplay">22°C</span>
+                    </div>
+                </div>
+                <select id="modeSelect">
+                    <option value="cool">Cooling</option>
+                    <option value="heat">Heating</option>
+                    <option value="fan">Fan</option>
+                </select>
+                <input type="range" id="temperature" min="16" max="30" value="22" disabled>
+                <button id="toggle-ac">Toggle AC</button>
+                <p>Mode: <span id="acModeDisplay">Cooling</span></p>
+                <p>Temperature: <span id="tempDisplay">22</span>°C</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Light Control Logic
+        const lightBulb = document.getElementById('light-bulb');
+        const brightnessInput = document.getElementById('brightness');
+        const redInput = document.getElementById('red');
+        const greenInput = document.getElementById('green');
+        const blueInput = document.getElementById('blue');
+        const redValue = document.getElementById('redValue');
+        const greenValue = document.getElementById('greenValue');
+        const blueValue = document.getElementById('blueValue');
+        const lightStatus = document.getElementById('lightStatus');
+        let isLightOn = false;
+
+        // 更新 RGB 数值显示
+        function updateRGBValues() {
+            redValue.textContent = redInput.value;
+            greenValue.textContent = greenInput.value;
+            blueValue.textContent = blueInput.value;
+        }
+
+        // 添加事件监听器，实时更新 RGB 数值显示
+        [redInput, greenInput, blueInput].forEach(input => {
+            input.addEventListener('input', updateRGBValues);
+        });
+
+        // Toggle Light Button Logic
+        document.getElementById('toggle-light').addEventListener('click', () => {
+            const isOn = lightBulb.classList.toggle('off');
+            lightStatus.textContent = isOn ? 'Off' : 'On'; // 状态根据类名决定
+            [brightnessInput, redInput, greenInput, blueInput].forEach(input => {
+                input.disabled = isOn; // 禁用与启用根据状态切换
+                });
+        });
+
+
+
+        // 更新灯光颜色
+        function updateLightColor() {
+            const r = redInput.value, g = greenInput.value, b = blueInput.value;
+            const brightness = brightnessInput.value / 100;
+            lightBulb.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${brightness})`;
+            lightBulb.style.boxShadow = `0 0 ${brightness * 20}px rgba(${r}, ${g}, ${b}, ${brightness})`;
+        }
+
+        [brightnessInput, redInput, greenInput, blueInput].forEach(input => {
+            input.addEventListener('input', updateLightColor);
+        });
+
+        // Curtain Control Logic
+        const leftCurtain = document.getElementById('left-curtain');
+        const rightCurtain = document.getElementById('right-curtain');
+        const leftCurtainRange = document.getElementById('leftCurtainRange');
+        const rightCurtainRange = document.getElementById('rightCurtainRange');
+        const leftCurtainStatus = document.getElementById('leftCurtainStatus');
+        const rightCurtainStatus = document.getElementById('rightCurtainStatus');
+
+        function updateCurtain(curtainElement, statusElement, value) {
+            curtainElement.style.width = `${value}%`;
+            statusElement.textContent = value === '0' ? 'Open' : 'Closed';
+        }
+
+        leftCurtainRange.addEventListener('input', () => {
+            updateCurtain(leftCurtain, leftCurtainStatus, leftCurtainRange.value);
+        });
+
+        rightCurtainRange.addEventListener('input', () => {
+            updateCurtain(rightCurtain, rightCurtainStatus, rightCurtainRange.value);
+        });
+
+
+        // Air Conditioner Control Logic
+        const acDial = document.getElementById('ac-dial');
+        const acTempDisplay = document.getElementById('acTempDisplay');
+        const tempInput = document.getElementById('temperature');
+        const modeSelect = document.getElementById('modeSelect');
+        const acModeDisplay = document.getElementById('acModeDisplay');
+        const tempDisplay = document.getElementById('tempDisplay');
+        let isAcOn = false;
+
+        function updateAc(isOn, temp, mode) {
+            acDial.classList.toggle('off', !isOn);
+            acTempDisplay.style.display = isOn ? 'block' : 'none';
+            tempInput.disabled = !isOn;
+            tempDisplay.textContent = temp;
+            acTempDisplay.textContent = `${temp}°C`;
+            acModeDisplay.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+        }
+
+        document.getElementById('toggle-ac').addEventListener('click', () => {
+            isAcOn = !isAcOn;
+            updateAc(isAcOn, tempInput.value, modeSelect.value);
+        });
+
+        tempInput.addEventListener('input', () => {
+            updateAc(isAcOn, tempInput.value, modeSelect.value);
+        });
+
+        modeSelect.addEventListener('change', () => {
+            updateAc(isAcOn, tempInput.value, modeSelect.value);
+        });
+
+    </script>
+    
+    
+
+    <script>
+    function updateLightStatus() {
+        const status = document.getElementById("lightStatus").innerText;
+        const lightBulb = document.getElementById("lightBulb");
+    
+        if (status === "On" && !lightBulb.classList.contains("light-on")) {
+            lightBulb.classList.add("light-on");
+            lightBulb.classList.remove("light-off");
+        } else if (status === "Off" && !lightBulb.classList.contains("light-off")) {
+            lightBulb.classList.add("light-off");
+            lightBulb.classList.remove("light-on");
+        }
+    }
+    
+    // 初始状态更新
+    updateLightStatus();
+    
+    // 定时刷新状态（如果状态变化需要实时更新）
+    const intervalId = setInterval(updateLightStatus, 1000);
+    
+    </script>
+    
+    <script>
+    function updateCurtainState(state) {
+        const leftStatus = document.getElementById('leftCurtainStatus');
+        const rightStatus = document.getElementById('rightCurtainStatus');
+        leftStatus.textContent = state === 'open' ? 'Open' : 'Closed';
+        rightStatus.textContent = state === 'open' ? 'Open' : 'Closed';
+    }
+    
+    document.getElementById('toggle-curtain').addEventListener('click', () => {
+        const currentState = document.getElementById('leftCurtainStatus').textContent.toLowerCase();
+        const newState = currentState === 'closed' ? 'open' : 'close';
+        
+        fetch('/control_curtain', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'room': 'Bedroom',
+                'state': newState
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                updateCurtainState(newState);
+            } else {
+                console.error('Failed to update curtain state:', data);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    </script>
+    
+    <div class="voice-control">
+        <button id="voice-btn" onclick="runNotebook()">
+            <i class="fa fa-microphone"></i>
+            <span class="wave"></span>
+        </button>
+    </div>
+    
+    
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    function runNotebook() {
+        const voiceButton = document.getElementById('voice-btn');
+    
+        // Add active class to start wave animation
+        voiceButton.classList.add('active');
+    
+        // Simulate script execution or voice recognition (remove wave after 3 seconds)
+        setTimeout(() => {
+            voiceButton.classList.remove('active');
+        }, 3000);
+    
+        // Make an AJAX call to start the script
+        $.ajax({
+            url: "/run_script",
+            method: "POST",
+            success: function (response) {
+                alert(response.message);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                alert(xhr.responseJSON ? xhr.responseJSON.error : "Failed to start script.");
+            }
+        });
+    }
+    </script>
+
+    <script>
+    document.getElementById('leftCurtainRange').addEventListener('input', (event) => {
+        const isOpen = event.target.value === '0'; // 判断滑块是否在最左侧
+        updateCurtainVisual(isOpen);
+    });
+    
+    document.getElementById('toggle-light').addEventListener('click', () => {
+        const isOn = document.getElementById('lightStatus').textContent === 'On';
+        updateLightVisual(isOn);
+    });
+    </script>
+
+    <script>fetch('/control_light', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ 'room': 'Bedroom', 'state': 'on' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            updateLightVisual(data.visual_effect === 'on');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+    
+    fetch('/control_curtain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ 'room': 'Bedroom', 'state': 'open' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            updateCurtainVisual(data.visual_effect === 'open');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+    </script>
+
+    <script>
+    function controlAc(action) {
+        fetch('/control_ac', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ 'room': 'Bedroom', 'state': action })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    </script>
+    
+</body>
+</html>

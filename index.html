@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-page">
+    <header class="background-header">
+        <h1>Welcome Back to Smart Home</h1>
+    </header>
+
+    <div class="login-container index-container">
+        <script>
+            function login() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // 检查用户名和密码是否正确（这里只是一个简单的例子）
+                if (username === 'testuser' && password === 'password123') {
+                    window.location.href = 'floorplan.html'; // 成功登录后跳转到 floorplan
+                    return false; // 阻止表单默认提交行为
+                } else {
+                    alert('Invalid username or password'); // 提示用户名或密码无效
+                    return false;
+                }
+            }
+        </script>
+        <form onsubmit="return login()">
+            <h2>Login</h2>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+            <div class="options">
+                <a href="forgot-password.html">Forgot Password?</a> | <a href="signup.html">Sign Up</a>
+            </div>
+        </form>
+        
+    </div>
+</body>
+
+</html>

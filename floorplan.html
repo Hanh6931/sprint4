@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home - Room Selection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="sidebar">
+        <div class="logo">SH</div>
+        <ul>
+            <li><a href="floorplan.html" class="active">Home</a></li>
+            <li><a href="bedroom.html">Bedroom</a></li>
+            <li><a href="living-room.html">Living Room</a></li>
+            <li><a href="kitchen.html">Kitchen</a></li>
+            <li><a href="bathroom.html">Bathroom</a></li>
+        </ul>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="main-content">
+        <header>
+            <h1>Select a Room to Control</h1>
+        </header>
+
+        <!-- 房间选择按钮区域 -->
+        <div class="room-selection-container">
+            <button class="room-button" onclick="window.location.href='bedroom.html'">Bedroom</button>
+            <button class="room-button" onclick="window.location.href='living-room.html'">Living Room</button>
+            <button class="room-button" onclick="window.location.href='kitchen.html'">Kitchen</button>
+            <button class="room-button" onclick="window.location.href='bathroom.html'">Bathroom</button>
+        </div>
+    </div>
+
+    <script>
+        // Logout Function
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

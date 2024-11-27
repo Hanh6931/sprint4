@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bathroom Controls</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="sidebar">
+        <div class="logo">SH</div>
+        <ul>
+            <li><a href="floorplan.html">Home</a></li>
+            <li><a href="bedroom.html">Bedroom</a></li>
+            <li><a href="living-room.html">Living Room</a></li>
+            <li><a href="kitchen.html">Kitchen</a></li>
+            <li><a href="bathroom.html" class="active">Bathroom</a></li>
+        </ul>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="main-content">
+        <header>
+            <h1>Bathroom Control</h1>
+        </header>
+
+        <div class="container">
+            <!-- Bathroom Light Control -->
+            <div class="device-control light-control">
+                <h2>Lights</h2>
+                <div id="light-bulb" class="light-bulb off"></div>
+                <label for="brightness">Brightness</label>
+                <input type="range" id="brightness" min="0" max="100" value="50" disabled>
+
+                <h3>RGB Control</h3>
+                <label for="red">Red</label>
+                <input type="range" id="red" min="0" max="255" value="128" disabled>
+                <p>Red: <span id="redValue">128</span></p>
+
+                <label for="green">Green</label>
+                <input type="range" id="green" min="0" max="255" value="128" disabled>
+                <p>Green: <span id="greenValue">128</span></p>
+
+                <label for="blue">Blue</label>
+                <input type="range" id="blue" min="0" max="255" value="128" disabled>
+                <p>Blue: <span id="blueValue">128</span></p>
+
+                <button id="toggle-light">Toggle Light</button>
+                <p>Status: <span id="lightStatus">Off</span></p>
+            </div>
+
+            <!-- Bathroom Curtain Control -->
+            <div class="device-control curtain-control">
+                <h2>Curtain Control</h2>
+                <div class="curtain-container">
+                    <div id="left-curtain" class="curtain curtain-left"></div>
+                    <div id="right-curtain" class="curtain curtain-right"></div>
+                </div>
+
+                <label for="leftCurtainRange">Left Curtain</label>
+                <input type="range" id="leftCurtainRange" min="0" max="100" value="100">
+                <p>Left Status: <span id="leftCurtainStatus">Closed</span></p>
+
+                <label for="rightCurtainRange">Right Curtain</label>
+                <input type="range" id="rightCurtainRange" min="0" max="100" value="100">
+                <p>Right Status: <span id="rightCurtainStatus">Closed</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Light Control Logic
+        const lightBulb = document.getElementById('light-bulb');
+        const brightnessInput = document.getElementById('brightness');
+        const redInput = document.getElementById('red');
+        const greenInput = document.getElementById('green');
+        const blueInput = document.getElementById('blue');
+        const redValue = document.getElementById('redValue');
+        const greenValue = document.getElementById('greenValue');
+        const blueValue = document.getElementById('blueValue');
+        const lightStatus = document.getElementById('lightStatus');
+        let isLightOn = false;
+
+        // 更新 RGB 数值显示
+        function updateRGBValues() {
+            redValue.textContent = redInput.value;
+            greenValue.textContent = greenInput.value;
+            blueValue.textContent = blueInput.value;
+        }
+
+        // 添加事件监听器，实时更新 RGB 数值显示
+        [redInput, greenInput, blueInput].forEach(input => {
+            input.addEventListener('input', updateRGBValues);
+        });
+
+        // Toggle Light Button Logic
+        document.getElementById('toggle-light').addEventListener('click', () => {
+            isLightOn = !isLightOn;
+            lightStatus.textContent = isLightOn ? 'On' : 'Off';
+            lightBulb.classList.toggle('off', !isLightOn);
+            [brightnessInput, redInput, greenInput, blueInput].forEach(input => {
+                input.disabled = !isLightOn;
+            });
+        });
+
+        // 更新灯光颜色
+        function updateLightColor() {
+            const r = redInput.value, g = greenInput.value, b = blueInput.value;
+            const brightness = brightnessInput.value / 100;
+            lightBulb.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${brightness})`;
+            lightBulb.style.boxShadow = `0 0 ${brightness * 20}px rgba(${r}, ${g}, ${b}, ${brightness})`;
+        }
+
+        [brightnessInput, redInput, greenInput, blueInput].forEach(input => {
+            input.addEventListener('input', updateLightColor);
+        });
+
+        // Curtain Control Logic
+        const leftCurtain = document.getElementById('left-curtain');
+        const rightCurtain = document.getElementById('right-curtain');
+        const leftCurtainRange = document.getElementById('leftCurtainRange');
+        const rightCurtainRange = document.getElementById('rightCurtainRange');
+        const leftCurtainStatus = document.getElementById('leftCurtainStatus');
+        const rightCurtainStatus = document.getElementById('rightCurtainStatus');
+
+        leftCurtainRange.addEventListener('input', () => {
+            leftCurtain.style.width = `${leftCurtainRange.value}%`;
+            leftCurtainStatus.textContent = leftCurtainRange.value === '0' ? 'Open' : 'Closed';
+        });
+
+        rightCurtainRange.addEventListener('input', () => {
+            rightCurtain.style.width = `${rightCurtainRange.value}%`;
+            rightCurtainStatus.textContent = rightCurtainRange.value === '0' ? 'Open' : 'Closed';
+        });
+
+        // Logout Function
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+    
+    <div class="voice-control">
+        <button id="voice-btn" onclick="runNotebook()">
+            <i class="fa fa-microphone"></i>
+            <span class="wave"></span>
+        </button>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    function runNotebook() {
+        const voiceButton = document.getElementById('voice-btn');
+    
+        // Add active class to start wave animation
+        voiceButton.classList.add('active');
+    
+        // Simulate script execution or voice recognition (remove wave after 3 seconds)
+        setTimeout(() => {
+            voiceButton.classList.remove('active');
+        }, 3000);
+    
+        // Make an AJAX call to start the script
+        $.ajax({
+            url: "/run_script",
+            method: "POST",
+            success: function (response) {
+                alert(response.message);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                alert(xhr.responseJSON ? xhr.responseJSON.error : "Failed to start script.");
+            }
+        });
+    }
+    </script>
+    <script>
+    document.getElementById('toggle-light').addEventListener('click', () => {
+        const isLightOn = document.getElementById('lightStatus').textContent === 'On';
+        const newState = isLightOn ? 'off' : 'on';
+        const room = "Bathroom";  
+        
+        fetch('/control_light', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'room': room,
+                'state': newState
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                document.getElementById('lightStatus').textContent = newState === 'on' ? 'On' : 'Off';
+            } else {
+                console.error('Failed to update light status:', data);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    </script>
+    
+
+</body>
+</html>

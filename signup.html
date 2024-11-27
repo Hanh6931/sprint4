@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Smart Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-page">
+    <header class="background-header">
+        <h1>Create Your Account</h1>
+    </header>
+
+    <div class="login-container">
+        <form action="index.html" method="POST" class="signup-form">
+            <h2>Basic Information</h2>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="input-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+
+            <h2>Home Information</h2>
+            <div class="input-group">
+                <label for="address">Home Address</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            <div class="input-group">
+                <label for="family-members">Number of Family Members</label>
+                <input type="number" id="family-members" name="family-members" required>
+            </div>
+
+            <button type="submit" class="login-btn">Sign Up</button>
+            <div class="options">
+                <a href="index.html">Back to Login</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
